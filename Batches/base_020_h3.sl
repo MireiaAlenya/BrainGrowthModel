@@ -10,7 +10,7 @@
 export OMP_NUM_THREADS=${SLURM_CPUS_PER_TASK}
 module load GCC/6.3.0-2.27
 module load GCCcore/6.3.0
-cd /homedtic/malenya/BrainGrowthModel/Batch
+cd /homedtic/malenya/BrainGrowthModel/Batches
 
 export H=3
 export IDE=20
@@ -20,7 +20,7 @@ export MESH_FILE="../../Brains_LargerStudy/Meshes/F-s020-w26-820k-gt.mesh"
 export PATH_DIR="../Results/Growth_Slope"
 export NAME="GS_"$IDE
 
-export gaFile="/homedtic/malenya/MeshesBrains/gestational_weeks_complete.csv"
+export gaFile="../MeshData/gestational_weeks_complete.csv"
 declare -A FGA NGA BGA GENDER ONSET
 INPUT=$gaFile
 OLDIFS=$IFS
@@ -41,5 +41,5 @@ birth=${BIRTH[$IDE]}
 gender=${GENDER[$IDE]}
 onset=${ONSET[$IDE]}
 
-g++ -Ofast -fopenmp base_0$IDE_h$H.cpp vema.cpp eig3.cpp -o $IDE.h$H
+g++ -Ofast -fopenmp base_0$IDE.cpp vema.cpp eig3.cpp -o $IDE.h$H
 ./$IDE.h$H $H $GROWTH_RELATIVE $MESH_FILE $IDE $PATH_DIR $NAME $GA $nga $birth $gender $onset
