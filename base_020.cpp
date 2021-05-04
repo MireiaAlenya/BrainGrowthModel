@@ -14,15 +14,15 @@
 #include <ctime>
 using namespace std;
 
-#define PATH_DIR "../Res.growth/"
-#define MESH_FILE "../../Brains_LargerStudy/Meshes/F-s020-w26-820k-gt.mesh"
-//#define LABEL_FILE "../../Meshes/fet-020-820k-labelfile.txt"
-#define BETA 0.01
-#define GROWTH_RELATIVE 1.829 
-#define NAME "n.020"
+//#define PATH_DIR 
+//#define MESH_FILE 
+//#define LABEL_FILE 
+//#define BETA 0.01
+//#define GROWTH_RELATIVE 
+//#define NAME 
 
-#define ID 20
-#define GA 26.4
+//#define ID
+//#define GA 
 
 
 class Tetra{
@@ -43,11 +43,10 @@ void createNNLtriangle(vector<int>*, Vector*, vector<Face>&, int*, int, int, dou
 Vector closestPointTriangle(Vector&, Vector&, Vector&, Vector&, double&, double&, double&);
 void Eigensystem(Matrix A, Matrix& V, double d[3]);
 void dist2surf(Vector*, int*, int, int, int*, double*);
-void writeTXT(Vector*, vector<Face>&, Tetra*, int*, int, int, int, double);
-void writeSTL(Vector*, vector<Face>&, int*, int*, int, int, int, int, double, int);
-void writeMESH(Vector*, vector<Face>&, Tetra*, int*, int, int, int, int, int, double, int);
-//void writeVTK(Vector*, vector<Face>&, Tetra*, Vector*, Vector*, Vector*, Vector*, Vector*, Vector*, Vector*, Vector*, double*, double*, double*, double*, double*, double*, Vector*, Vector*, int*, int, int, int, int, int, double, int);
-void writeVTK(Vector*, vector<Face>&, Tetra*, Vector*, Vector*, Vector*, Vector*, Vector*, Vector*, Vector*, Vector*, double*, double*, double*, double*, double*, double*, Vector*, Vector*, int*, int, int, int, int, int, double, int);
+void writeTXT(char*, char*, Vector*, vector<Face>&, Tetra*, int*, int, int, int, double);
+void writeSTL(char*, char*, Vector*, vector<Face>&, int*, int*, int, int, int, int, double, int);
+void writeMESH(char*, char*, Vector*, vector<Face>&, Tetra*, int*, int, int, int, int, int, double, int);
+void writeVTK(char*, char*, Vector*, vector<Face>&, Tetra*, Vector*, Vector*, Vector*, Vector*, Vector*, Vector*, Vector*, Vector*, double*, double*, double*, double*, double*, double*, Vector*, Vector*, int*, int, int, int, int, int, double, int);
 
 int main(int argc, char* argv[]) {
 	std::cout << "Try implement new relation between GA-time modifying growth tensor computation. Version 1."<< std::endl;
@@ -65,6 +64,7 @@ int main(int argc, char* argv[]) {
 	// DEFINE CORTICAL THICKNESS
 	int hname;
 	double Hi; // Thickness of growing layer defined in the sh file.
+	double BETA = 0.01;
 	if (!strcmp(argv[1], "1")) { Hi = 0.0125; hname = 1;}  		//{ H = 0.74; }
 	else if (!strcmp(argv[1], "2")) { Hi = 0.0251; hname = 2;}  	//{ H = 1.48; }
  	else if (!strcmp(argv[1], "3")) { Hi = 0.0336; hname = 3;} 	//{ H = 1.98; }
@@ -72,8 +72,20 @@ int main(int argc, char* argv[]) {
 	else if (!strcmp(argv[1], "5")) { Hi = 0.0505; hname = 5;} 	//{ H = 2.98; }
 	else if (!strcmp(argv[1], "6")) { Hi = 0.1010; hname = 6;}  	//{ H = 5.96; }
 	
+	double GROWTH_RELATIVE=atof(argv[2]);
+	char* MESH_FILE=argv[3];
+	int ID=atoi(argv[4]);
+	char* PATH_DIR = argv[5];
+	char* NAME = argv[6];
+	double GA = atof(argv[7]);
+	double NeoGA = atof(argv[8]);
+	double birth = atof(argv[9]);
+	int gender = atoi(argv[10]);
+	int onset = atoi(argv[11]);
+	
 	std::cout<< "Hi: "<<Hi <<std::endl;
-    // ----------------------------------------------------------------------
+    
+	// ----------------------------------------------------------------------
     
     // CREATE FOLDER 
     int f = mkdir(PATH_DIR, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
@@ -971,10 +983,10 @@ int main(int argc, char* argv[]) {
 				spw++; 
 				//if (step%dimesh == 0) {
 				//writeMESH(Ut1, faces, tets, SNb, nn, ne, step, hname, id, ga, spw);
-				writeSTL(Ut1, faces, SN, SNb, nsn, step, id, hname, ga, spw);
+				writeSTL(PATH_DIR, NAME, Ut1, faces, SN, SNb, nsn, step, id, hname, ga, spw);
 				// writeTXT(Ut1, faces, tets, SNb, nn, hname, id, ga);
-				writeTXT(Ut1, faces, tets, SN, nsn, hname, id, ga);
-				writeVTK(Ut1, faces, tets, mat_T1, mat_T2, mat_T3, mat_T_diag, mat_G1, mat_G2, mat_G3, mat_G_diag, contacts, mu_vec, gm_vec, gr, gr_vtk, d2s, Vt, Ft, SNb, nn, ne, step, hname, id, ga, spw);
+				writeTXT(PATH_DIR, NAME, Ut1, faces, tets, SN, nsn, hname, id, ga);
+				writeVTK(PATH_DIR, NAME, Ut1, faces, tets, mat_T1, mat_T2, mat_T3, mat_T_diag, mat_G1, mat_G2, mat_G3, mat_G_diag, contacts, mu_vec, gm_vec, gr, gr_vtk, d2s, Vt, Ft, SNb, nn, ne, step, hname, id, ga, spw);
 			}
 		}
 
@@ -1212,7 +1224,7 @@ void dist2surf(Vector* Ut, int* SN, int nn, int nsn, int* csn, double* d2s) {
 
 // ----------------------------------------------------------------------
 
-void writeSTL(Vector* Ut, vector<Face>& faces, int* SN, int* SNb, int nsn, int step, int id, int hname, double ga, int spw){
+void writeSTL(char* PATH_DIR, char* NAME, Vector* Ut, vector<Face>& faces, int* SN, int* SNb, int nsn, int step, int id, int hname, double ga, int spw){
     char stlname[110];
 
 	sprintf(stlname, "%s/%s/SD%d_h%d-GA_%.0f.stl", PATH_DIR, NAME, id, hname, ga);
@@ -1246,7 +1258,7 @@ void writeSTL(Vector* Ut, vector<Face>& faces, int* SN, int* SNb, int nsn, int s
 
 // ----------------------------------------------------------------------
 
-void writeMESH(Vector* Ut, vector<Face>& faces, Tetra* tets, int* SNb, int nn, int ne, int step, int hname, int id, double ga, int spw){
+void writeMESH(char* PATH_DIR, char* NAME, Vector* Ut, vector<Face>& faces, Tetra* tets, int* SNb, int nn, int ne, int step, int hname, int id, double ga, int spw){
    char meshname[100];
    sprintf(meshname, "%s/%s/D0%d_h%d_s%d-GA_%.0f.mesh", PATH_DIR, NAME, id, hname, step, ga);
    ofstream mesh(meshname);
@@ -1269,7 +1281,7 @@ void writeMESH(Vector* Ut, vector<Face>& faces, Tetra* tets, int* SNb, int nn, i
 // ----------------------------------------------------------------------
 
 
-void writeTXT(Vector* Ut, vector<Face>& faces, Tetra* tets, int* SN, int nsn, int hname, int id, double ga){
+void writeTXT(char* PATH_DIR, char* NAME, Vector* Ut, vector<Face>& faces, Tetra* tets, int* SN, int nsn, int hname, int id, double ga){
 	
 	char txtname[100];
 	sprintf(txtname, "%s/%s/SD%d_h%d-GA_%.0f.txt", PATH_DIR, NAME, id, hname, ga);
@@ -1293,7 +1305,7 @@ void writeTXT(Vector* Ut, vector<Face>& faces, Tetra* tets, int* SN, int nsn, in
 
 // ----------------------------------------------------------------------
 
-void writeVTK(Vector* Ut1, vector<Face>& faces, Tetra* tets, Vector* mat_T1, Vector* mat_T2, Vector* mat_T3, Vector* mat_T_diag, Vector* mat_G1, Vector* mat_G2, Vector* mat_G3, Vector* mat_G_diag, double* contacts, double* mu_vec, double* gm_vec, double* gr, double* gr_vtk, double* d2s, Vector* Vt, Vector* Ft, int* SNb, int nn, int ne, int step, int hname, int id, double ga, int spw){
+void writeVTK(char* PATH_DIR, char* NAME, Vector* Ut1, vector<Face>& faces, Tetra* tets, Vector* mat_T1, Vector* mat_T2, Vector* mat_T3, Vector* mat_T_diag, Vector* mat_G1, Vector* mat_G2, Vector* mat_G3, Vector* mat_G_diag, double* contacts, double* mu_vec, double* gm_vec, double* gr, double* gr_vtk, double* d2s, Vector* Vt, Vector* Ft, int* SNb, int nn, int ne, int step, int hname, int id, double ga, int spw){
 	char vtkname[100];
 	sprintf(vtkname, "%s/%s/SD%d_h%d-GA_%.0f.vtk", PATH_DIR, NAME, id, hname, ga);
 
