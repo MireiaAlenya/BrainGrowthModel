@@ -1,6 +1,6 @@
-# BrainGrowthModel
-T.Tallinen_Codes_MA
-Codes published by T. Tallinen: http://users.jyu.fi/~tutatall/codes.html (Brain Folder) Tallinen's articles:
+# Brain Growth Model - Physense Version (Mireia Alenyà)
+
+Codes published by T. Tallinen: http://users.jyu.fi/~tutatall/codes.html (Brain Folder) Tallinen's articles: **the link is no longer available
 
 On the growth and form of cortical convolutions, T. Tallinen et al, 2016 (https://www.nature.com/articles/nphys3632) (1)
 Gyrification from constrained cortical expansion, T. Tallinen et al, 2014 (https://www.pnas.org/content/pnas/111/35/12667.full.pdf) (2)
