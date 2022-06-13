@@ -1,4 +1,4 @@
-# Brain Growth Model - Physense Version (Mireia Alenyà)
+# Brain Growth Model - Physense Version
 
 Codes published by T. Tallinen: http://users.jyu.fi/~tutatall/codes.html (Brain Folder) Tallinen's articles: **the link is no longer available
 
